@@ -26,9 +26,9 @@ export default class CustomElementRegistry {
 
     /**
      * @private
-     * @type {!Map<string, !Deferred<undefined>>}
+     * @type {!Map<string, !Map<string, !Deferred<undefined>>>}
      */
-    this._whenDefinedDeferred = new Map();
+    this._whenDefinedDeferred = new Map( [ [ "http://www.w3.org/1999/xhtml", new Map() ] ]);
 
     /**
      * The default flush callback triggers the document walk synchronously.
@@ -60,16 +60,18 @@ export default class CustomElementRegistry {
    * @param {string} localName
    * @param {!Function} constructor
    */
-  define(localName, constructor) {
+  define(localName, constructor, options) {
     if (!(constructor instanceof Function)) {
       throw new TypeError('Custom element constructors must be functions.');
     }
 
-    if (!Utilities.isValidCustomElementName(localName)) {
+    const namespace = options && options['namespace'] ? options['namespace'] : "http://www.w3.org/1999/xhtml";
+    // only localName restrictions when in HTML namespace
+    if (namespace === "http://www.w3.org/1999/xhtml" && !Utilities.isValidCustomElementName(localName)) {
       throw new SyntaxError(`The element name '${localName}' is not valid.`);
     }
 
-    if (this._internals.localNameToDefinition(localName)) {
+    if (this._internals.localNameToDefinition(localName, namespace)) {
       throw new Error(`A custom element with name '${localName}' has already been defined.`);
     }
 
@@ -111,6 +113,7 @@ export default class CustomElementRegistry {
 
     const definition = {
       localName,
+      namespace,
       constructor,
       connectedCallback,
       disconnectedCallback,
@@ -120,7 +123,7 @@ export default class CustomElementRegistry {
       constructionStack: [],
     };
 
-    this._internals.setDefinition(localName, definition);
+    this._internals.setDefinition(localName, definition, namespace);
     this._pendingDefinitions.push(definition);
 
     // If we've already called the flush callback and it hasn't called back yet,
@@ -150,11 +153,16 @@ export default class CustomElementRegistry {
     /**
      * A map from `localName`s of definitions that were defined *after* the last
      * flush to unupgraded elements matching that definition, in document order.
-     * @type {!Map<string, !Array<!Element>>}
+     * @type {!Map<string, !Map<string, !Array<!Element>>>}
      */
-    const elementsWithPendingDefinitions = new Map();
+    const elementsWithPendingDefinitions = new Map([ [ "http://www.w3.org/1999/xhtml", new Map() ] ]);
     for (let i = 0; i < pendingDefinitions.length; i++) {
-      elementsWithPendingDefinitions.set(pendingDefinitions[i].localName, []);
+      /** @type {string} */
+      const namespace = pendingDefinitions[i].namespace;
+      if (!elementsWithPendingDefinitions.has(namespace)) {
+        elementsWithPendingDefinitions.set(namespace, new Map());
+      }
+      elementsWithPendingDefinitions.get(namespace).set(pendingDefinitions[i].localName, []);
     }
 
     this._internals.patchAndUpgradeTree(document, {
@@ -163,15 +171,16 @@ export default class CustomElementRegistry {
         if (element.__CE_state !== undefined) return;
 
         const localName = element.localName;
+        const namespace = element.namespaceURI;
 
         // If there is an applicable pending definition for the element, add the
         // element to the list of elements to be upgraded with that definition.
-        const pendingElements = elementsWithPendingDefinitions.get(localName);
+        const pendingElements = elementsWithPendingDefinitions.get(namespace).get(localName);
         if (pendingElements) {
           pendingElements.push(element);
         // If there is *any other* applicable definition for the element, add it
         // to the list of elements with stable definitions that need to be upgraded.
-        } else if (this._internals.localNameToDefinition(localName)) {
+        } else if (this._internals.localNameToDefinition(localName, namespace)) {
           elementsWithStableDefinitions.push(element);
         }
       },
@@ -186,27 +195,32 @@ export default class CustomElementRegistry {
     while (pendingDefinitions.length > 0) {
       const definition = pendingDefinitions.shift();
       const localName = definition.localName;
+      const namespace = definition.namespace;
 
       // Attempt to upgrade all applicable elements.
-      const pendingUpgradableElements = elementsWithPendingDefinitions.get(definition.localName);
+      const pendingUpgradableElements = elementsWithPendingDefinitions.get(namespace).get(localName);
       for (let i = 0; i < pendingUpgradableElements.length; i++) {
         this._internals.upgradeElement(pendingUpgradableElements[i]);
       }
 
       // Resolve any promises created by `whenDefined` for the definition.
-      const deferred = this._whenDefinedDeferred.get(localName);
-      if (deferred) {
-        deferred.resolve(undefined);
+      const entry = this._whenDefinedDeferred.get(namespace);
+      if (entry) {
+        const deferred = entry.get(localName);
+        if (deferred) {
+          deferred.resolve(undefined);
+        }
       }
     }
   }
 
   /**
    * @param {string} localName
+   * @param {?string} namespace
    * @return {Function|undefined}
    */
-  get(localName) {
-    const definition = this._internals.localNameToDefinition(localName);
+  get(localName, namespace) {
+    const definition = this._internals.localNameToDefinition(localName, namespace);
     if (definition) {
       return definition.constructor;
     }
@@ -216,26 +230,35 @@ export default class CustomElementRegistry {
 
   /**
    * @param {string} localName
+   * @param {?string} namespace
    * @return {!Promise<undefined>}
    */
-  whenDefined(localName) {
-    if (!Utilities.isValidCustomElementName(localName)) {
+  whenDefined(localName, namespace) {
+    if (!namespace) {
+      namespace = "http://www.w3.org/1999/xhtml";
+    }
+    if (namespace === "http://www.w3.org/1999/xhtml" && !Utilities.isValidCustomElementName(localName)) {
       return Promise.reject(new SyntaxError(`'${localName}' is not a valid custom element name.`));
     }
 
-    const prior = this._whenDefinedDeferred.get(localName);
-    if (prior) {
-      return prior.toPromise();
+    const entry = this._whenDefinedDeferred.get(namespace);
+    if (entry) {
+      const prior = entry.get(localName);
+      if (prior) {
+        return prior.toPromise();
+      }
+    } else {
+      this._whenDefinedDeferred.set(namespace, new Map());
     }
 
     const deferred = new Deferred();
-    this._whenDefinedDeferred.set(localName, deferred);
+    this._whenDefinedDeferred.get(namespace).set(localName, deferred);
 
-    const definition = this._internals.localNameToDefinition(localName);
+    const definition = this._internals.localNameToDefinition(localName, namespace);
     // Resolve immediately only if the given local name has a definition *and*
     // the full document walk to upgrade elements with that local name has
     // already happened.
-    if (definition && !this._pendingDefinitions.some(d => d.localName === localName)) {
+    if (definition && !this._pendingDefinitions.some(d => d.namespace === namespace && d.localName === localName)) {
       deferred.resolve(undefined);
     }
 

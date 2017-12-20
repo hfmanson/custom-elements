@@ -3,9 +3,6 @@ import CEState from './CustomElementState.js';
 
 export default class CustomElementInternals {
   constructor() {
-    /** @type {!Map<string, !CustomElementDefinition>} */
-    this._localNameToDefinition = new Map();
-
     /** @type {!Map<!Function, !CustomElementDefinition>} */
     this._constructorToDefinition = new Map();
 
@@ -14,23 +11,39 @@ export default class CustomElementInternals {
 
     /** @type {boolean} */
     this._hasPatches = false;
+
+    /** @type {!Map<string, !Map<string, !CustomElementDefinition>>} */
+    this._namespaceToMap = new Map( [ [ "http://www.w3.org/1999/xhtml", new Map() ] ]);
   }
 
   /**
    * @param {string} localName
+   * @param {?string} namespace
    * @param {!CustomElementDefinition} definition
    */
-  setDefinition(localName, definition) {
-    this._localNameToDefinition.set(localName, definition);
+  setDefinition(localName, definition, namespace) {
+    if (!namespace) {
+        namespace = "http://www.w3.org/1999/xhtml";
+    }
+    if (!this._namespaceToMap.has(namespace)) {
+        this._namespaceToMap.set(namespace, new Map())
+    }
+    const localNameToDefinition = this._namespaceToMap.get(namespace)
+    localNameToDefinition.set(localName, definition);
     this._constructorToDefinition.set(definition.constructor, definition);
   }
 
   /**
    * @param {string} localName
+   * @param {?string} namespace
    * @return {!CustomElementDefinition|undefined}
    */
-  localNameToDefinition(localName) {
-    return this._localNameToDefinition.get(localName);
+  localNameToDefinition(localName, namespace) {
+    if (!namespace) {
+        namespace = "http://www.w3.org/1999/xhtml";
+    }
+    const localNameToDefinition = this._namespaceToMap.get(namespace);
+    return localNameToDefinition ? localNameToDefinition.get(localName) : undefined;
   }
 
   /**
@@ -255,7 +268,7 @@ export default class CustomElementInternals {
       !(ownerDocument.__CE_isImportDocument && ownerDocument.__CE_hasRegistry)
     ) return;
 
-    const definition = this.localNameToDefinition(element.localName);
+    const definition = this.localNameToDefinition(element.localName, element.namespaceURI);
     if (!definition) return;
 
     definition.constructionStack.push(element);

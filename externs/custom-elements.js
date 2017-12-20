@@ -14,6 +14,7 @@ const CustomElementState = {
 /**
  * @typedef {{
  *  localName: string,
+ *  namespace: string,
  *  constructor: !Function,
  *  connectedCallback: Function,
  *  disconnectedCallback: Function,
