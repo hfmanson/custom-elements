@@ -8,8 +8,6 @@ import PatchParentNode from './Interface/ParentNode.js';
  * @param {!CustomElementInternals} internals
  */
 export default function(internals) {
-  const NS_HTML = "http://www.w3.org/1999/xhtml";
-
   Utilities.setPropertyUnchecked(Document.prototype, 'createElement',
     /**
      * @this {Document}
@@ -19,7 +17,7 @@ export default function(internals) {
     function(localName) {
       // Only create custom elements if this document is associated with the registry.
       if (this.__CE_hasRegistry) {
-        const definition = internals.localNameToDefinition(localName, NS_HTML);
+        const definition = internals.localNameToDefinition(localName, Utilities.NS_HTML);
         if (definition) {
           return new (definition.constructor)();
         }

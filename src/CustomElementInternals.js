@@ -13,7 +13,7 @@ export default class CustomElementInternals {
     this._hasPatches = false;
 
     /** @type {!Map<string, !Map<string, !CustomElementDefinition>>} */
-    this._namespaceToMap = new Map( [ [ "http://www.w3.org/1999/xhtml", new Map() ] ]);
+    this._namespaceToMap = new Map( [ [ Utilities.NS_HTML, new Map() ] ]);
   }
 
   /**
@@ -23,7 +23,7 @@ export default class CustomElementInternals {
    */
   setDefinition(localName, definition, namespace) {
     if (!namespace) {
-        namespace = "http://www.w3.org/1999/xhtml";
+        namespace = Utilities.NS_HTML;
     }
     if (!this._namespaceToMap.has(namespace)) {
         this._namespaceToMap.set(namespace, new Map())
@@ -40,7 +40,7 @@ export default class CustomElementInternals {
    */
   localNameToDefinition(localName, namespace) {
     if (!namespace) {
-        namespace = "http://www.w3.org/1999/xhtml";
+        namespace = Utilities.NS_HTML;
     }
     const localNameToDefinition = this._namespaceToMap.get(namespace);
     return localNameToDefinition ? localNameToDefinition.get(localName) : undefined;

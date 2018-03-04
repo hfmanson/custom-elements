@@ -9,6 +9,8 @@ const reservedTagList = new Set([
   'missing-glyph',
 ]);
 
+export const NS_HTML = "http://www.w3.org/1999/xhtml";
+
 /**
  * @param {string} localName
  * @returns {boolean}

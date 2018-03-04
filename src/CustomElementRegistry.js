@@ -28,7 +28,7 @@ export default class CustomElementRegistry {
      * @private
      * @type {!Map<string, !Map<string, !Deferred<undefined>>>}
      */
-    this._whenDefinedDeferred = new Map( [ [ "http://www.w3.org/1999/xhtml", new Map() ] ]);
+    this._whenDefinedDeferred = new Map( [ [ Utilities.NS_HTML, new Map() ] ]);
 
     /**
      * The default flush callback triggers the document walk synchronously.
@@ -65,9 +65,9 @@ export default class CustomElementRegistry {
       throw new TypeError('Custom element constructors must be functions.');
     }
 
-    const namespace = options && options['namespace'] ? options['namespace'] : "http://www.w3.org/1999/xhtml";
+    const namespace = options && options['namespace'] ? options['namespace'] : Utilities.NS_HTML;
     // only localName restrictions when in HTML namespace
-    if (namespace === "http://www.w3.org/1999/xhtml" && !Utilities.isValidCustomElementName(localName)) {
+    if (namespace === Utilities.NS_HTML && !Utilities.isValidCustomElementName(localName)) {
       throw new SyntaxError(`The element name '${localName}' is not valid.`);
     }
 
@@ -155,7 +155,7 @@ export default class CustomElementRegistry {
      * flush to unupgraded elements matching that definition, in document order.
      * @type {!Map<string, !Map<string, !Array<!Element>>>}
      */
-    const elementsWithPendingDefinitions = new Map([ [ "http://www.w3.org/1999/xhtml", new Map() ] ]);
+    const elementsWithPendingDefinitions = new Map([ [ Utilities.NS_HTML, new Map() ] ]);
     for (let i = 0; i < pendingDefinitions.length; i++) {
       /** @type {string} */
       const namespace = pendingDefinitions[i].namespace;
@@ -235,9 +235,9 @@ export default class CustomElementRegistry {
    */
   whenDefined(localName, namespace) {
     if (!namespace) {
-      namespace = "http://www.w3.org/1999/xhtml";
+      namespace = Utilities.NS_HTML;
     }
-    if (namespace === "http://www.w3.org/1999/xhtml" && !Utilities.isValidCustomElementName(localName)) {
+    if (namespace === Utilities.NS_HTML && !Utilities.isValidCustomElementName(localName)) {
       return Promise.reject(new SyntaxError(`'${localName}' is not a valid custom element name.`));
     }
 
