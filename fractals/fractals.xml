@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fractal="http://mansoft.nl/fractal">
+    <head>
+        <title>Fractals</title>
+        <script src="../custom-elements.min.js"/>
+        <script src="Fractal.js" type="text/javascript"/>
+        <script src="CECanvas.js" type="text/javascript"/>
+        <script src="CEFractal.js" type="text/javascript"/>
+    </head>
+    <body>
+        <fractal:kronkel
+            width='512'
+            height='512'
+            window='{"lx": -0.5, "by": -0.5, "rx": 1.5, "ty": 1.5}'
+            n='12'
+            m='[ {"x": 0.5, "y": 0.5}, {"x": 1.0, "y": 0.0} ]'
+        />
+        <fractal:kronkel
+            width='512'
+            height='512'
+            window='{"lx": 0.0, "by": 0.0, "rx": 1.0, "ty": 1.0}'
+            n='5'
+            m='[ {"x": 0.5, "y": 0.0}, {"x": 0.5, "y": 0.33}, {"x": 0.5, "y": 0.0}, {"x": 1.0, "y": 0.0} ]'
+        />
+        <fractal:kronkel
+            width='512'
+            height='512'
+            bgcolor='red'
+            fgcolor='blue'
+            window='{"lx": 0.0, "by": 0.0, "rx": 1.0, "ty": 1.0}'
+            n='5'
+            m='[ {"x": 0.47, "y": 0.0}, {"x": 0.5, "y": 0.47}, {"x": 0.53, "y": 0.0}, {"x": 1.0, "y": 0.0} ]'
+        />
+        <fractal:mira
+            width='512'
+            height='512'
+            bgcolor='white'
+            fgcolor='brown'
+        />
+        <fractal:stof
+            width='512'
+            height='512'
+        />
+        <fractal:henon
+            width='512'
+            height='512'
+        />
+    </body>
+</html>

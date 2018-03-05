@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Mixed HTML/SVG/MathML content</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h2>HTML</h2>
+        <table border="1" style="border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th>Bulbs</th>
+                    <th>
+                        <var>i</var> (amps)
+                    </th>
+                    <th>
+                        <var>V</var>  (volts)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>one</td>
+                    <td class="n">0.30</td>
+                    <td class="n">3.0</td>
+                </tr>
+
+                <tr>
+                    <td>two</td>
+                    <td class="n">0.15</td>
+                    <td class="n">1.5</td>
+                </tr>
+                <tr>
+                    <td>three</td>
+                    <td class="n">0.10</td>
+                    <td class="n">1.0</td>
+                </tr>
+            </tbody>
+        </table>
+        <ol>
+            <li>A Haier microwave oven consumes 1250 Watts at 120 volts. What is the current in amperes used by the microwave?</li>
+            <li>A Haier microwave oven consumes 1250 Watts at 120 volts. What is the resistance of the microwave in Ohms ?</li>
+        </ol>
+        <h2>MathML</h2>
+        <math fontsize="500%">
+        <mrow>
+        <msub>
+        <mi>x</mi>
+        <mn fontsize="50%">1,2</mn>
+        </msub>
+        <mo>=</mo>
+        <mfrac>
+        <mrow>
+        <mrow>
+        <mo>-</mo>
+        <mi>b</mi>
+        </mrow>
+        <mo>±</mo>
+        <msqrt>
+        <mrow>
+        <msup>
+        <mi>b</mi>
+        <mn>2</mn>
+        </msup>
+        <mo>-</mo>
+        <mrow>
+        <mn>4</mn>
+        <mi>a</mi>
+        <mi>c</mi>
+        </mrow>
+        </mrow>
+        </msqrt>
+        </mrow>
+        <mrow>
+        <mn>2</mn>
+        <mi>a</mi>
+        </mrow>
+        </mfrac>
+        </mrow>
+        </math>
+        <h2>SVG</h2>
+        <svg version="1.1" width="300px" height="350px">
+        <title>SVG xy scatter graph of current versus voltage</title>
+        <g style="font-family:calibri,tahoma,helvetica,sans-serif">
+
+        <g fill="none" stroke="darkgray" stroke-width="2px">
+        <desc>grid</desc>
+        <path d="M 50,50
+              v 240 m 30,-240 v 240 m 30,-240 v 240 m 30,-240 v 240 m 30,-240
+              v 240 m 30,-240 v 240 m 30,-240 v 240 m 30,-240 v 240 m 30,-240" />
+        <path d="M 50,50
+              h 210 m -210,30 h 210 m -210,30 h 210 m -210,30 h 210 m -210,30
+              h 210 m -210,30 h 210 m -210,30 h 210 m -210,30 h 210 m -210,30" />
+        </g>
+        <desc>axes</desc>
+        <g fill="none" stroke="darkgreen" stroke-width="3px">
+        <path d="M 50,50 v 240 h 210 " />
+
+        </g>
+        <desc>data points</desc>
+        <g fill="mediumslateblue" stroke="black" stroke-width="1px">
+        <rect x="104" y="224" width="12" height="12" />
+        <rect x="134" y="194" width="12" height="12" />
+        <rect x="224" y="104" width="12" height="12" />
+        </g>
+        <g>
+        <desc>text layers</desc>
+        <text x="70" y="15" style="font-weight:bold">Current versus voltage</text>
+        <text x="65" y="35">From electricity laboratory</text>
+        <text x="100" y="340">x-axis: i (amperes)</text>
+        <g transform=" translate(15,230) rotate(-90)">
+        <text x="0" y="0">y-axis: V (voltage)</text>
+        </g>
+        <desc>y-axis labels</desc>
+        <text x="25" y="295">0.0</text>
+        <text x="25" y="265">0.5</text>
+        <text x="25" y="235">1.0</text>
+        <text x="25" y="205">1.5</text>
+        <text x="25" y="175">2.0</text>
+        <text x="25" y="145">2.5</text>
+        <text x="25" y="115">3.0</text>
+        <text x="25" y="085">3.5</text>
+        <text x="25" y="055">4.0</text>
+
+        <desc>x-axis labels</desc>
+        <text x="035" y="310">0.00</text>
+        <text x="095" y="310">0.10</text>
+        <text x="155" y="310">0.20</text>
+        <text x="215" y="310">0.30</text>
+        </g>
+        </g>
+        </svg>    </body>
+</html>

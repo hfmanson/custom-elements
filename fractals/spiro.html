@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fractals</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="Fractal.js" type="text/javascript"></script>
+        <script src="CECanvas.js" type="text/javascript"></script>
+        <script src="CESpiro.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <canvas-spiro
+            id="spiro1"
+            width="512"
+            height="512"
+            data-bgcolor="white"
+            data-ring="96.0"
+        >
+            <canvas-spiro-fig data-wiel="60" data-color="red" data-gat="1" data-startpos="0"></canvas-spiro-fig>
+            <canvas-spiro-fig data-wiel="60" data-color="red" data-gat="3" data-startpos="0"></canvas-spiro-fig>
+            <canvas-spiro-fig data-wiel="60" data-color="red" data-gat="5" data-startpos="0"></canvas-spiro-fig>
+            <canvas-spiro-fig data-wiel="60" data-color="red" data-gat="7" data-startpos="0"></canvas-spiro-fig>
+        </canvas-spiro>
+        <canvas-spiro
+            id="spiro2"
+            width='512'
+            height='512'
+            data-bgcolor='white'
+            data-ring="105.0"
+        >
+            <canvas-spiro-fig data-wiel="80" data-color="red" data-gat="1" data-startpos="0"></canvas-spiro-fig>
+            <canvas-spiro-fig data-wiel="80" data-color="green" data-gat="6" data-startpos="0"></canvas-spiro-fig>
+            <canvas-spiro-fig data-wiel="80" data-color="blue" data-gat="11" data-startpos="0"></canvas-spiro-fig>
+            <canvas-spiro-fig data-wiel="80" data-color="green" data-gat="16" data-startpos="0"></canvas-spiro-fig>
+            <canvas-spiro-fig data-wiel="80" data-color="red" data-gat="21" data-startpos="0"></canvas-spiro-fig>
+        </canvas-spiro>
+    </body>
+</html>
