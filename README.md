@@ -1,3 +1,20 @@
+# Custom Elements (v1) Polyfill: namespace-aware
+This fork of custom-elements enhances window.customElements.define so that the options argument can contain a
+'namespace' property which contains an XHTML namespaceURI e.g. http://mansoft.nl/fractal so you can put a
+custom element in another namespace than http://www.w3.org/1999/xhtml, which is the default when no namespace is
+specified. The custom element registry is now a 2 dimensional lookup table. First the namespaceURI is looked up and then the localname of the custom Element. Examples of usage are in the fractal directory e.g. https://github.com/hfmanson/custom-elements/blob/namespace-aware/fractals/fractals.xhtml
+
+Here the 'fractal' namespace is used to define custom elements, notice these custom elements do not contain hyphens.
+An important change is to no longer use the HTML-specific onclick functions etc. but the generic DOM addEventListener pattern.
+
+
+
+This polyfill needs to be run on a browser that does not support Custom Elements natively, e.g. Microsoft Edge or Firefox 58.
+
+A life demo is at http://mansoft.nl/custom-elements/
+
+This work is based on this proposal: https://github.com/w3c/webcomponents/issues/634
+
 # Custom Elements (v1) Polyfill [![Build Status](https://travis-ci.org/webcomponents/custom-elements.svg?branch=master)](https://travis-ci.org/webcomponents/custom-elements)
 
 A polyfill for the [custom elements](https://html.spec.whatwg.org/multipage/scripting.html#custom-elements)
